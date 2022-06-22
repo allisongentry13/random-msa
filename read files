@@ -1,0 +1,129 @@
+from fileinput import filename
+from operator import mod
+import os.path
+from statistics import median
+
+def get_file_name():
+    while True:
+        #prompt user to enter file name
+        user_input = input("Please enter a file name: ")
+        #make sure user entered a value. Re prompt if not
+        if user_input == "":
+            print("ERROR: please enter a value.\n")
+            continue
+        elif not os.path.exists(user_input):
+            print("ERROR: File does not exist.\n")
+            continue
+        else:
+            break
+    #else return the value
+    return user_input
+
+#Function to load numbers from file into list
+#Parameters: file name
+#returns a list of numbers
+def load_numbers_list(file_name):
+    numbers_list = []
+    #open the file
+    file = open(file_name, "r")
+    #read file line by line
+    for number in file:
+        #convert to int and append numbers to a list
+        numbers_list.append(int(number))
+    #return the list
+    return numbers_list
+
+def calculate_median_value(numbers_list):
+    #sort the list
+    numbers_list.sort()
+    #determine if the list has an even or odd number of items using the len() function
+    if (len(numbers_list) % 2 == 0):
+        is_even = True
+    else:
+        is_even = False
+    #if even find the two middle values and calculate the average of the two
+    if is_even:
+        index_1 = int(len(numbers_list) / 2)
+        print(index_1)
+        index_2 = index_1 - 1
+        print(index_2)
+        median = (numbers_list[index_1] + numbers_list[index_2]) / 2
+    #if odd, return the middle value
+    else:
+        index = int((len(numbers_list) - 1) / 2)
+        median = numbers_list[index]
+ 
+    return median
+
+def determine_modal_value(numbers_list):
+    #create a dictionary to store list values and frequencies
+    modal_values = {}
+    list_of_modal_values = []        
+    #loop through list
+    for number in numbers_list:
+    #  If the number is in the dictionary then add 1 to its value
+        # if number not in dictionary then insert as key in dictionary with value 1
+
+        if number in modal_values:
+            modal_values[number] += 1
+        else:
+            modal_values[number] = 1
+
+    #determine the largest value in the dictionary
+    list_values = modal_values.values()
+    max_value = max(list_values)
+    #append those eys with the largest values to a list
+    for key in modal_values:
+        if modal_values[key] == max_value:
+            list_of_modal_values.append(key)
+    #return list of modal values
+    
+    return list_of_modal_values
+
+def print_output(file_name, count, range, max_value, min_value, median_value, mode_value, total_sum, average_value):
+        print ("Name of file: ", file_name)
+        print ("Count:", count)
+        print ("Range:", range)
+        print ("Max value:", max_value)
+        print ("Min value:", min_value)
+        print ("Median value:", median_value)
+        print ("Mode value:", mode_value)
+        print ("Sum:", total_sum)
+        print ("Average:", average_value)
+        return
+
+def process_data(file_name, list_of_numbers):
+    median_value = calculate_median_value(list_of_numbers)
+    modal_values = determine_modal_value(list_of_numbers)
+    number_of_elements = len(list_of_numbers)
+    max_value = max(list_of_numbers)
+    min_value = min(list_of_numbers)
+    range = max_value - min_value
+    total_sum = sum(list_of_numbers)
+    average_value = total_sum / number_of_elements
+    print_output(file_name, number_of_elements,range,max_value,min_value,median_value, modal_values, total_sum, average_value)
+
+
+def main():
+    while True:
+        #ask user to enter filename and open that file
+        file_name = get_file_name()
+        
+        #load number from file into a list
+        list_of_numbers = load_numbers_list(file_name)
+
+        #check the length of the list
+        if len(list_of_numbers) == 0:
+            print("File was empty")
+        elif len(list_of_numbers) == 1:
+            print("Only one number in file")
+        else:
+            process_data(file_name, list_of_numbers)
+            
+        run_again = input("Analyze another file? 1. Yes 2. No \n")
+        if run_again == "2":
+            break
+        
+
+
+main()
